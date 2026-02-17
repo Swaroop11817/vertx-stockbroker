@@ -1,4 +1,4 @@
-package com.swaroop.udemy.vertx_stock_broker;
+package com.swaroop.udemy.broker;
 
 import io.vertx.core.Vertx;
 import io.vertx.junit5.VertxExtension;
