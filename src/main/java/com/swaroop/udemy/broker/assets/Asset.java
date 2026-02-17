@@ -1,14 +1,11 @@
 package com.swaroop.udemy.broker.assets;
 
+import lombok.*;
 
+
+@Value
 public class Asset {
-  private final String name;
 
-  public Asset(String name) {
-    this.name = name;
-  }
+   String name;
 
-  public String getName() {
-    return name;
-  }
 }
