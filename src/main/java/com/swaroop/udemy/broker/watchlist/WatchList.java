@@ -2,11 +2,16 @@ package com.swaroop.udemy.broker.watchlist;
 
 import com.swaroop.udemy.broker.assets.Asset;
 import io.vertx.core.json.JsonObject;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.util.List;
 
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class WatchList {
 
      List<Asset> assets;

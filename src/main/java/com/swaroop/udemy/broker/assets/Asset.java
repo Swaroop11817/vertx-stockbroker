@@ -3,7 +3,9 @@ package com.swaroop.udemy.broker.assets;
 import lombok.*;
 
 
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Asset {
 
    String name;

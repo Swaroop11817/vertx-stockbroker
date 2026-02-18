@@ -1,11 +1,14 @@
 package com.swaroop.udemy.broker.assets;
 
 import com.swaroop.udemy.broker.MainVerticle;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +27,11 @@ public class TestAssetsRestApi {
     vertx.deployVerticle(new MainVerticle()).onComplete(testContext.succeeding(id -> testContext.completeNow()));
   }
 
+  @AfterEach
+  void tearDown(Vertx vertx, VertxTestContext ctx) {
+    vertx.close().onComplete(ctx.succeedingThenComplete());
+  }
+
   @Test
   void returns_all_assets(Vertx vertx, VertxTestContext testContext) throws Throwable {
      var client = WebClient.create(vertx,new WebClientOptions().setDefaultPort(MainVerticle.PORT));
@@ -34,6 +42,9 @@ public class TestAssetsRestApi {
          LOG.info("Response {}", json);
          assertEquals("[{\"name\":\"AAPL\"},{\"name\":\"AMZN\"},{\"name\":\"FB\"},{\"name\":\"GOOG\"},{\"name\":\"MSFT\"},{\"name\":\"NFLX\"},{\"name\":\"TSLA\"}]",json.encode());
          assertEquals(200,response.statusCode());
+         assertEquals(HttpHeaderValues.APPLICATION_JSON.toString(),
+           response.getHeader(HttpHeaders.CONTENT_TYPE.toString()));
+         assertEquals("my-value",response.getHeader("my-header"));
          testContext.completeNow();
        }));
   }

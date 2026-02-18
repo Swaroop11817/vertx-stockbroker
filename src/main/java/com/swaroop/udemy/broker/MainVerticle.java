@@ -9,6 +9,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public class MainVerticle extends VerticleBase {
   @Override
   public Future<?> start() {
     final Router restApi = Router.router(vertx);
-    restApi.route().failureHandler(errorContext -> {
+    restApi.route().handler(BodyHandler.create()).failureHandler(errorContext -> {
       if(errorContext.response().ended()){
         return;
       }
