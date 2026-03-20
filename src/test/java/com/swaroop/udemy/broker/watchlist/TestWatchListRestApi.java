@@ -1,5 +1,6 @@
 package com.swaroop.udemy.broker.watchlist;
 
+import com.swaroop.udemy.broker.AbstractRestApiTest;
 import com.swaroop.udemy.broker.MainVerticle;
 import com.swaroop.udemy.broker.assets.Asset;
 import com.swaroop.udemy.broker.quotes.TestQuotesRestApi;
@@ -23,15 +24,12 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(VertxExtension.class)
-public class TestWatchListRestApi {
+public class TestWatchListRestApi extends AbstractRestApiTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(TestQuotesRestApi.class);
 
 
-  @BeforeEach
-  void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
-    vertx.deployVerticle(new MainVerticle()).onComplete(testContext.succeeding(id -> testContext.completeNow()));
-  }
+
 
   @AfterEach
   void tearDown(Vertx vertx, VertxTestContext ctx) {
@@ -40,7 +38,7 @@ public class TestWatchListRestApi {
 
   @Test
   void adds_and_returns_watchlist_for_account(Vertx vertx, VertxTestContext testContext) throws Throwable {
-    var client = WebClient.create(vertx,new WebClientOptions().setDefaultPort(MainVerticle.PORT));
+    var client = WebClient.create(vertx,new WebClientOptions().setDefaultPort(AbstractRestApiTest.TEST_SERVER_PORT));
     var accountId = UUID.randomUUID();
     client.put("/account/watchlist/"+accountId.toString()).sendJsonObject(body())
       .onComplete(testContext.succeeding(response -> {
@@ -65,7 +63,7 @@ public class TestWatchListRestApi {
 
   @Test
   void adds_and_deletes_watchlist_for_account(Vertx vertx, VertxTestContext testContext) throws Throwable {
-    var client = WebClient.create(vertx,new WebClientOptions().setDefaultPort(MainVerticle.PORT));
+    var client = WebClient.create(vertx,new WebClientOptions().setDefaultPort(AbstractRestApiTest.TEST_SERVER_PORT));
     var accountId = UUID.randomUUID();
     client.put("/account/watchlist/"+accountId.toString()).sendJsonObject(body())
       .onComplete(testContext.succeeding(response -> {

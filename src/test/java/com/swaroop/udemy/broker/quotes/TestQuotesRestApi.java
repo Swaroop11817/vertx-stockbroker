@@ -1,5 +1,6 @@
 package com.swaroop.udemy.broker.quotes;
 
+import com.swaroop.udemy.broker.AbstractRestApiTest;
 import com.swaroop.udemy.broker.MainVerticle;
 import com.swaroop.udemy.broker.assets.TestAssetsRestApi;
 import io.vertx.core.Vertx;
@@ -17,14 +18,10 @@ import org.slf4j.LoggerFactory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(VertxExtension.class)
-public class TestQuotesRestApi {
+public class TestQuotesRestApi extends AbstractRestApiTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(TestQuotesRestApi.class);
 
-  @BeforeEach
-  void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
-    vertx.deployVerticle(new MainVerticle()).onComplete(testContext.succeeding(id -> testContext.completeNow()));
-  }
 
   @AfterEach
   void tearDown(Vertx vertx, VertxTestContext ctx) {
@@ -33,7 +30,7 @@ public class TestQuotesRestApi {
 
   @Test
   void returns_quote_for_asset(Vertx vertx, VertxTestContext testContext) throws Throwable {
-    var client = WebClient.create(vertx,new WebClientOptions().setDefaultPort(MainVerticle.PORT));
+    var client = WebClient.create(vertx,new WebClientOptions().setDefaultPort(AbstractRestApiTest.TEST_SERVER_PORT));
     client.get("/quotes/AMZN")
       .send()
       .onComplete(testContext.succeeding(response -> {
@@ -47,7 +44,7 @@ public class TestQuotesRestApi {
 
   @Test
   void returns_not_found_for_unknown_asset(Vertx vertx, VertxTestContext testContext) throws Throwable {
-    var client = WebClient.create(vertx,new WebClientOptions().setDefaultPort(MainVerticle.PORT));
+    var client = WebClient.create(vertx,new WebClientOptions().setDefaultPort(AbstractRestApiTest.TEST_SERVER_PORT));
     client.get("/quotes/UNKNOWN")
       .send()
       .onComplete(testContext.succeeding(response -> {

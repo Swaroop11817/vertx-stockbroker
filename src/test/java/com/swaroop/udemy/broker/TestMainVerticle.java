@@ -9,12 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(VertxExtension.class)
-public class TestMainVerticle {
-
-  @BeforeEach
-  void deploy_verticle(Vertx vertx, VertxTestContext testContext) {
-    vertx.deployVerticle(new MainVerticle()).onComplete(testContext.succeeding(id -> testContext.completeNow()));
-  }
+public class TestMainVerticle extends AbstractRestApiTest {
 
   @AfterEach
   void tearDown(Vertx vertx, VertxTestContext ctx) {

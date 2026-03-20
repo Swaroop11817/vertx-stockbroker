@@ -2,8 +2,6 @@ package com.swaroop.udemy.broker.quotes;
 
 import com.swaroop.udemy.broker.assets.Asset;
 import com.swaroop.udemy.broker.assets.AssetsRestApi;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class QuotesRestApi {
