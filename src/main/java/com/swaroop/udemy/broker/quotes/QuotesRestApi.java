@@ -3,6 +3,7 @@ package com.swaroop.udemy.broker.quotes;
 import com.swaroop.udemy.broker.assets.Asset;
 import com.swaroop.udemy.broker.assets.AssetsRestApi;
 import io.vertx.ext.web.Router;
+import io.vertx.sqlclient.Pool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,13 +16,14 @@ public class QuotesRestApi {
 
   private static final Logger LOG = LoggerFactory.getLogger(QuotesRestApi.class);
 
-  public static void attach(Router parent) {
+  public static void attach(Router parent, final Pool db) {
     final Map<String, Quote> cachedQuotes = new HashMap<>();
     AssetsRestApi.ASSETS.forEach(symbol ->
       cachedQuotes.put(symbol, initRandomQuote(symbol))
   );
 
     parent.get("/quotes/:asset").handler(new GetQuoteHandler(cachedQuotes));
+    parent.get("/pg/quotes/:asset").handler(new GetQuoteFromDatabaseHandler(db));
   }
 
   private static Quote initRandomQuote(final String assetParam) {

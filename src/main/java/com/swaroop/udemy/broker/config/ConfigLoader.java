@@ -19,19 +19,25 @@ public class ConfigLoader {
   public static final String CONFIG_FILE = "application.yml";
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfigLoader.class);
   public static final String SERVER_PORT = "SERVER_PORT";
-  static final List<String> EXPOSED_ENVIRONMENT_VARIABLES = Arrays.asList("SERVER_PORT");
+  public static final String DB_HOST = "DB_HOST";
+  public static final String DB_PORT = "DB_PORT";
+  public static final String DB_DATABASE = "DB_DATABASE";
+  public static final String  DB_USER = "DB_USER";
+  public static final String DB_PASSWORD = "DB_PASSWORD";
+  static final List<String> EXPOSED_ENVIRONMENT_VARIABLES = Arrays.asList(SERVER_PORT,
+    DB_HOST,DB_PORT,DB_DATABASE,DB_USER,DB_PASSWORD);
 
   public static Future<BrokerConfig> load(Vertx vertx){
     final var exposedKeys = new JsonArray();
     EXPOSED_ENVIRONMENT_VARIABLES.forEach(exposedKeys::add);
     LOGGER.debug("Fetch configuration for {}", exposedKeys.encode());
     var envStore = new ConfigStoreOptions()
-      .setType("env")
-      .setConfig(new JsonObject().put("keys", exposedKeys));
+                 .setType("env")
+                 .setConfig(new JsonObject().put("keys", exposedKeys));
 
     var propertyStore = new ConfigStoreOptions()
-      .setType("sys")
-      .setConfig(new JsonObject().put("cache", false));
+                      .setType("sys")
+                      .setConfig(new JsonObject().put("cache", false));
 
     var yamlStore = new ConfigStoreOptions()
                   .setType("file")

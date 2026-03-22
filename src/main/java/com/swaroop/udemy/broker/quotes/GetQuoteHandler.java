@@ -1,5 +1,6 @@
 package com.swaroop.udemy.broker.quotes;
 
+import com.swaroop.udemy.broker.DbResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
@@ -27,12 +28,7 @@ public class GetQuoteHandler implements Handler<RoutingContext> {
 
     var mayBequote = Optional.ofNullable(cachedQuotes.get(assetParam));
     if (mayBequote.isEmpty()) {
-      routingContext.response()
-        .setStatusCode(HttpResponseStatus.NOT_FOUND.code())
-        .end(new JsonObject()
-          .put("message", "quote for asset " + assetParam + " not available!")
-          .put("path", routingContext.normalizedPath())
-          .toBuffer());
+      DbResponse.notFoundResponse(routingContext, "quote for asset " + assetParam + " not available!");
       return;
     }
     final JsonObject response = mayBequote.get().toJsonObject();

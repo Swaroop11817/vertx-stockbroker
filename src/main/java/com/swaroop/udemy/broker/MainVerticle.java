@@ -1,6 +1,7 @@
 package com.swaroop.udemy.broker;
 
 import com.swaroop.udemy.broker.config.ConfigLoader;
+import com.swaroop.udemy.broker.db.migration.FlywayMigration;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.VerticleBase;
@@ -15,7 +16,7 @@ public class MainVerticle extends VerticleBase {
   public static final int PORT = 8888;
 
   public static void main(String[] args){
-    System.setProperty(ConfigLoader.SERVER_PORT,"9800");
+//    System.setProperty(ConfigLoader.SERVER_PORT,"9800");
     var vertx = Vertx.vertx();
     vertx.exceptionHandler(error -> {
       LOG.error("Unhandled:", error);
@@ -39,8 +40,19 @@ public class MainVerticle extends VerticleBase {
      .onSuccess(id -> {
        LOG.info("Deployed {} with id: {}", VersionInfoVerticle.class.getSimpleName(), id);
      })
+      .compose(next -> migrateDatabase())
+      .onFailure(error -> LOG.info("Database migration failed: {}", error))
+      .onSuccess(msg -> LOG.info("Database migration completed: {}", msg))
       .compose(next -> deployRestApiVerticle());
 
+
+  }
+
+  private Future<Void> migrateDatabase() {
+    return ConfigLoader.load(vertx)
+      .compose(config -> {
+        return FlywayMigration.migrate(vertx, config.getDbConfig());
+      });
 
   }
 
@@ -48,7 +60,7 @@ public class MainVerticle extends VerticleBase {
     return vertx.deployVerticle(RestApiVerticle.class.getName(), new DeploymentOptions().setInstances(processors())).onFailure(error -> {
       LOG.error("Failed to deploy RestApiVerticle", error);
     }).onSuccess(id -> {
-      LOG.info("Deployed {} with id: {}", RestApiVerticle.class.getName(), id);
+      LOG.info("Deployed {} with id: {}", RestApiVerticle.class.getSimpleName(), id);
     });
   }
 
