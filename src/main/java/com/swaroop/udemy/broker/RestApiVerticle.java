@@ -53,7 +53,7 @@ public class RestApiVerticle extends VerticleBase {
     });
     AssetsRestApi.attach(restApi,db);
     QuotesRestApi.attach(restApi,db);
-    WatchListRestApi.attach(restApi);
+    WatchListRestApi.attach(restApi,db);
 
     return vertx.createHttpServer().requestHandler(restApi)
       .exceptionHandler(error -> LOG.error("HTTP Server error: ", error))
